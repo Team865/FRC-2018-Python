@@ -1,0 +1,61 @@
+from threading import Thread
+from misc.Util import Runnable
+from time import time as NanoTime
+from time import sleep
+
+class RTS(Thread):
+	def __init__(self, name, TARGET_HZ=60):
+		Thread.__init__(self)
+		
+		self._tasks = []
+		self._running = False
+		self._delta = 0.0
+		self._OPTIMAL_TIME = 1000000000.0 / TARGET_HZ
+		self._name = name
+		self._hz = TARGET_HZ
+
+	def run(self):		
+		if not self._running:
+			self._running = True
+			hzcont = 0
+			lastHzTime = 0
+			lastLoopTime = NanoTime()
+			while running:
+				now = NanoTime()
+				updateLength = now - lastLoopTime
+				lastLoopTime = now
+				_delta = updateLength / (_OPTIMAL_TIME)
+				lastHzTime += updateLength
+				hzcont += 1
+				if lastHzTime >= 1000000000:
+					lastHzTime = 0
+					_hz = hzcont
+					hzcont = 0
+				
+				for task in self._tasks:
+					task.run()
+				
+				sleep((lastLoopTime - NanoTime() + _OPTIMAL_TIME) / 1000000)
+		else:
+			print("RTS is already running for object:", self._name)
+
+	def stop(self):
+		self._running = False
+
+	def addTask(self, task):
+		self._tasks.append(task)
+
+	def getHz(self):
+		return self._hz
+
+	def getDelta(self):
+		return self._delta
+
+	def isRunning(self):
+		return self._running
+
+	def getTargetHz(self):
+		return self._TARGET_HZ
+
+	def getName(self):
+		return self._name
