@@ -14,18 +14,18 @@ import threading
 import wpilib
 from wpilib.interfaces import PIDSource
 
-from ._impl import AHRSProtocol
+from robotpy_ext.common_drivers.navx._impl import AHRSProtocol
 
-from .continuousangletracker import ContinuousAngleTracker
-from .inertialdataintegrator import InertialDataIntegrator
-from .offsettracker import OffsetTracker
+from robotpy_ext.common_drivers.navx.continuousangletracker import ContinuousAngleTracker
+from robotpy_ext.common_drivers.navx.inertialdataintegrator import InertialDataIntegrator
+from robotpy_ext.common_drivers.navx.offsettracker import OffsetTracker
 
-from .registerio import RegisterIO
-from .registerio_i2c import RegisterIO_I2C
-from .registerio_spi import RegisterIO_SPI
+from robotpy_ext.common_drivers.navx.registerio import RegisterIO
+from robotpy_ext.common_drivers.navx.registerio_i2c import RegisterIO_I2C
+from robotpy_ext.common_drivers.navx.registerio_spi import RegisterIO_SPI
 
 import logging
-logger = logging.getLogger('navx')
+logger = logging.getLogger('AHRS')
 
 __all__ = ['AHRS']
 

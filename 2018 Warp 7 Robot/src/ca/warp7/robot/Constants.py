@@ -1,0 +1,58 @@
+from math import pi
+
+RIGHT_DRIVE_MOTOR_IDS = [ 5,1 ];
+LEFT_DRIVE_MOTOR_IDS = [ 3,4 ];
+INTAKE_MOTOR_RIGHT_IDS = [ 2 ];
+INTAKE_MOTOR_LEFT_IDS = [ 7 ];
+LIFT_MOTOR_LEFT_IDS = [ 6 ];
+LIFT_MOTOR_RIGHT_IDS = [ 8 ];
+CLIMBER_MOTORS_IDS = [ 9,0 ];
+
+#TODO Update Constants!
+# DIG Pins
+LEFT_DRIVE_ENCODER_A = 2;
+LEFT_DRIVE_ENCODER_B = 3;
+RIGHT_DRIVE_ENCODER_A = 0;
+RIGHT_DRIVE_ENCODER_B = 1;
+
+HALL_DIO = 9;
+
+#TODO Update Constants!
+# Solenoids (manifold ports)
+DRIVE_SHIFTER_PORT = 1;
+INTAKE_PISTONS = 0;
+
+#TODO Update Constants!
+# Compressor
+COMPRESSOR_PIN = 0;
+
+#TODO Update Constants!
+# Remote IDs
+DRIVER_ID = 0;
+OPERATOR_ID = 1;
+
+#TODO Update Constants!
+# Robot dimensions and stuff
+WHEEL_DIAMETER = 6; # inches
+WHEEL_CIRCUMFERENCE = pi * WHEEL_DIAMETER;
+DRIVE_TICKS_PER_REV = 256; #256
+DRIVE_INCHES_PER_TICK = WHEEL_CIRCUMFERENCE / DRIVE_TICKS_PER_REV;
+
+RIGHT_DRIFT_OFFSET = 1;
+LEFT_DRIFT_OFFSET = 0.97;
+
+LIFT_HEIGHT = 13200;
+CLIMBER_HEIGHT = 255; # string potentiometer max number
+
+LIFT_ENCODER_A = 4;
+LIFT_ENCODER_B = 5;
+
+#input data points here -> https://www.wolframalpha.com/input/?i=linear+fit+%7B1,+3%7D,%7B2,+4%7D
+# y = mx + b
+CUBE_DISTANCE_M = 0.741402;
+CUBE_DISTANCE_B = 91.1675;
+
+SPEED_OFFSET = 0.195;
+SPEED_OFFSET_CUBE = 0 - SPEED_OFFSET;
+SPEED_OFFSET_2ND_STAGE = 0;
+

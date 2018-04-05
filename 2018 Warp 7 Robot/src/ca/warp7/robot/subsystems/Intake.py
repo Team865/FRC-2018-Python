@@ -1,10 +1,16 @@
-class Intake(object):
-	def __init__(self):
+from ca.warp7.robot.misc.LimelightPhotosensor import LimelightPhotosensor
+from ca.warp7.robot.misc.SyncGroup import SyncGroup
+from wpilib import Solenoid
+from ca.warp7.robot.Constants import *
+from ctre.wpi_victorspx import WPI_VictorSPX
+
+class Intake:
+	def __init__(self,Robot):
 		self._lift = Robot.lift
 		self._ramp = 0.0
 		self._rampSpeed = 6.0
-		self._intakeMotorLeft = MotorGroup(INTAKE_MOTOR_LEFT_IDS, WPI_VictorSPX.)
-		self._intakeMotorRight = MotorGroup(INTAKE_MOTOR_RIGHT_IDS, WPI_VictorSPX.)
+		self._intakeMotorLeft = SyncGroup(INTAKE_MOTOR_LEFT_IDS, WPI_VictorSPX)
+		self._intakeMotorRight = SyncGroup(INTAKE_MOTOR_RIGHT_IDS, WPI_VictorSPX)
 		self._intakeMotorRight.setInverted(True)
 		self._intakePistons = Solenoid(INTAKE_PISTONS)
 		self._photosensor = LimelightPhotosensor(Robot.limelight, 1)

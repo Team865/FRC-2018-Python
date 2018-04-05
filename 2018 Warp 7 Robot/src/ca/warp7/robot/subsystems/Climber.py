@@ -1,17 +1,15 @@
-package ca.warp7.robot.subsystems;
+from ca.warp7.robot.Constants import *
 
-import static ca.warp7.robot.Constants.CLIMBER_MOTORS_IDS;
-import static ca.warp7.robot.Constants.CLIMBER_HEIGHT;
-
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+#import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 from wpilib import Encoder
-from common.syncgroup import SyncGroup
+from ca.warp7.robot.misc.SyncGroup import SyncGroup
+from ctre.wpi_victorspx import WPI_VictorSPX
 
 class Climber:
 	def __init__(self):
-		self.climberMotors = new SyncGroup(CLIMBER_MOTORS_IDS, WPI_VictorSPX.class)
-		self.climberPot = Encoder(*constants.encoder_elevator)   # --> string potentiometer 
+		self.climberMotors = SyncGroup(CLIMBER_MOTORS_IDS, WPI_VictorSPX)
+		#self.climberPot = Encoder(*constants.encoder_elevator)   # --> string potentiometer 
 		self.setLocation = 0
 		self.ramp = 0.0
 		self.rampSpeed = 6.0
@@ -20,8 +18,8 @@ class Climber:
 
 	def setSpeed(self, speed):
 		# Ramp to prevent brown outs
-		ramp += (self.speed - self.ramp)/self.rampSpeed
-		self.climberMotors.set(ramp)
+		self.ramp += (self.speed - self.ramp)/self.rampSpeed
+		self.climberMotors.set(self.ramp)
 
 	def setLoc(self, loc):
 		self.setLocation = loc

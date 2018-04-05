@@ -1,18 +1,26 @@
-class Lift(object):
-	def __init__(self):
+from ca.warp7.robot.misc.SyncGroup import SyncGroup
+from wpilib import Encoder, DigitalInput, SmartDashboard
+from ca.warp7.robot.Constants import *
+from com.stormbots.MiniPID import MiniPID
+from ctre.wpi_victorspx import WPI_VictorSPX
+from math import pow
+
+class Lift:
+	def __init__(self,Robot):
 		self._intake = Robot.intake
 		self._drive = Robot.drive
 		self._ramp = 0
 		self._rampSpeed = 6
-		self._LiftMotorLeft = MotorGroup(LIFT_MOTOR_LEFT_IDS, WPI_VictorSPX.)
-		self._LiftMotorRight = MotorGroup(LIFT_MOTOR_RIGHT_IDS, WPI_VictorSPX.)
+		self._LiftMotorLeft = SyncGroup(LIFT_MOTOR_LEFT_IDS, WPI_VictorSPX)
+		self._LiftMotorRight = SyncGroup(LIFT_MOTOR_RIGHT_IDS, WPI_VictorSPX)
 		self._LiftMotorLeft.setInverted(True)
-		self._liftEncoder = Encoder(LIFT_ENCODER_A, LIFT_ENCODER_B, False, EncodingType.k4X)
+		self._liftEncoder = Encoder(LIFT_ENCODER_A, LIFT_ENCODER_B, False, Encoder.EncodingType.k4X)
 		self._liftEncoder.setDistancePerPulse(1)
 		self._liftHallaffect = DigitalInput(HALL_DIO)
 		self.zeroEncoder()
 		self._liftPID = MiniPID(2.5, 0, 0)
 		self._liftPID.setOutputLimits(-0.5, 1)
+		self.disableSpeedLimit = False
 
 	def setSpeed(self, speed):
 		self._LiftMotorLeft.set(speed)
@@ -26,25 +34,31 @@ class Lift(object):
 		self._LiftMotorRight.set(self._ramp)
 
 	def setLoc(self, scale):
-		target = Math.Abs(scale)
+		target = abs(scale)
 		SmartDashboard.putNumber("loc dfliusafusd", target)
 		self._liftPID.setSetpoint(target)
 
 	def periodic(self):
+		
 		if self.isBottom(): #zero switch is active zero encoder
 			self.zeroEncoder()
-		scaledLift = self.getEncoderVal() / LIFT_HEIGHT
-		speed = self._liftPID.getOutput(scaledLift)
-		invertVal = Math.Abs(1 - scaledLift)
-		self._drive.setSpeedLimit(TIP_CONSTANT * invertVal)
-		#if intake.hasCube():
-			#rampSpeed(speed+SPEED_OFFSET_CUBE);
-		#else:
-			#rampSpeed(speed+SPEED_OFFSET);
-		self.rampSpeed(speed)
+		else:
+			if self._intake.getSpeed() >= 0:
+				self._intake.rampSpeed(0.3);
+		
+		scaledLift = self.getEncoderVal()/LIFT_HEIGHT;
+		speed = self._liftPID.getOutput(scaledLift);
+		
+		if not self.disableSpeedLimit:
+			speedLimit = pow(0.25,scaledLift);
+			self._drive.setSpeedLimit(speedLimit);
+		else:
+			self._drive.setSpeedLimit(1);
+		
+		self.rampSpeed(speed);
 
 	def getEncoderVal(self):
-		return Math.Abs(self._liftEncoder.getDistance())
+		return abs(self._liftEncoder.getDistance())
 
 	def zeroEncoder(self):
 		self._liftEncoder.reset()

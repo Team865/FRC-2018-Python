@@ -1,5 +1,8 @@
 from wpilib import XboxController
 
+from ca.warp7.robot.controls.Control import *
+from wpilib.interfaces.GenericHID import Hand
+
 class XboxControllerPlus():
 	def __init__(self, port):
 		self._controller = XboxController(port)		
@@ -124,7 +127,7 @@ class XboxControllerPlus():
 			self._ls = b
 		else:
 			self._rs = b
-		if _b != a:
+		if b != a:
 			if b:
 				return PRESSED
 			else:
@@ -176,8 +179,8 @@ class XboxControllerPlus():
 		else:
 			return UP
 			
-	def setRumble(self, type, d):
-		self._controller.setRumble(type, d)
+	def setRumble(self, type1, d):
+		self._controller.setRumble(type1, d)
 
 	def getX(self, hand):
 		return self._controller.getX(hand)

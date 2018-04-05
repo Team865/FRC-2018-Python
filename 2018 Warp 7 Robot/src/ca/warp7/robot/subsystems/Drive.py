@@ -1,16 +1,16 @@
 import logging
-import math
-from wpilib import Encoder
-from misc import Util
-from misc.syncgroup import SyncGroup
-from . import Component
+from wpilib import Encoder, Solenoid
+from ca.warp7.robot.misc import Util
+from ca.warp7.robot.misc.DataPool import DataPool
+from ca.warp7.robot.misc.SyncGroup import SyncGroup
+from ctre.wpi_victorspx import WPI_VictorSPX
+from ca.warp7.robot.Constants import *
 
 
 log = logging.getLogger("drivetrain")
 
 
-class Drive(Component):
-
+class Drive:
 	def __init__(self):
 		self._leftRamp = 0.0
 		self._rightRamp = 0.0
@@ -24,15 +24,15 @@ class Drive(Component):
 		
 		self._drivePool = DataPool("Drive")
 		# setup drive train motors
-		self.rightDrive = MotorGroup(RIGHT_DRIVE_MOTOR_IDS, WPI_VictorSPX.)
-		self.leftDrive = MotorGroup(LEFT_DRIVE_MOTOR_IDS, WPI_VictorSPX.)
+		self.rightDrive = SyncGroup(RIGHT_DRIVE_MOTOR_IDS, WPI_VictorSPX)
+		self.leftDrive = SyncGroup(LEFT_DRIVE_MOTOR_IDS, WPI_VictorSPX)
 		self.rightDrive.setInverted(True)
 		# setup drive train gear shifter
 		self.shifter = Solenoid(DRIVE_SHIFTER_PORT)
 		self.shifter.set(False)
 		# setup drive train encoders
-		self.leftEncoder = Encoder(LEFT_DRIVE_ENCODER_A, LEFT_DRIVE_ENCODER_B, False, EncodingType.k4X)
-		self.rightEncoder = Encoder(RIGHT_DRIVE_ENCODER_A, RIGHT_DRIVE_ENCODER_B, False, EncodingType.k4X)
+		self.leftEncoder = Encoder(LEFT_DRIVE_ENCODER_A, LEFT_DRIVE_ENCODER_B, False, Encoder.EncodingType.k4X)
+		self.rightEncoder = Encoder(RIGHT_DRIVE_ENCODER_A, RIGHT_DRIVE_ENCODER_B, False, Encoder.EncodingType.k4X)
 		self.leftEncoder.setDistancePerPulse(DRIVE_INCHES_PER_TICK)
 		self.leftEncoder.setReverseDirection(True)
 		self.rightEncoder.setReverseDirection(False)
@@ -43,27 +43,30 @@ class Drive(Component):
 		wheel = Util.deadband(wheel)
 		if self._driveReversed:
 			wheel *= -1
+			
 		neg_inertia = wheel - self._old_wheel
 		self._old_wheel = wheel
-		wheel = Util.sinScale(wheel, 0.9f, 1, 0.9f)
+		wheel = Util.sinScale(wheel, 0.9, 1, 0.9)
+		
 		if wheel * neg_inertia > 0:
-			neg_inertia_scalar = 2.5f
+			neg_inertia_scalar = 2.5
 		else:
-			if Math.Abs(wheel) > .65:
+			if abs(wheel) > .65:
 				neg_inertia_scalar = 6
 			else:
 				neg_inertia_scalar = 4
 		neg_inertia_accumulator = neg_inertia * neg_inertia_scalar
 		wheel += neg_inertia_accumulator
+		
 		if altQuickturn:
-			if Math.Abs(throttle) < 0.2:
-				alpha = .1f
+			if abs(throttle) < 0.2:
+				alpha = .1
 				self._quickstop_accumulator = (1 - alpha) * self._quickstop_accumulator + alpha * self.limit(wheel, 1.0) * 5
 			over_power = -wheel * .75
 			angular_power = -wheel * 1
 		elif quickturn:
-			if Math.Abs(throttle) < 0.2:
-				alpha = .1f
+			if abs(throttle) < 0.2:
+				alpha = .1
 				self._quickstop_accumulator = (1 - alpha) * self._quickstop_accumulator + alpha * self.limit(wheel, 1.0) * 5
 			over_power = 1
 			angular_power = -wheel * 1
@@ -72,12 +75,14 @@ class Drive(Component):
 			sensitivity = .9
 			angular_power = throttle * wheel * sensitivity - self._quickstop_accumulator
 			self._quickstop_accumulator = Util.wrap_accumulator(self._quickstop_accumulator)
+			
 		if shift:
-			if not shifter.get():
-				shifter.set(True)
+			if not self.shifter.get():
+				self.shifter.set(True)
 		else:
-			if shifter.get():
-				shifter.set(False)
+			if self.shifter.get():
+				self.shifter.set(False)
+				
 		right_pwm = left_pwm = throttle
 		left_pwm += angular_power
 		right_pwm -= angular_power
@@ -97,23 +102,23 @@ class Drive(Component):
 			left_pwm *= -1
 			right_pwm *= -1
 			
-		if shifter.get(): # if low gear
+		if self.shifter.get(): # if low gear
 			#leftDrive.set(left_pwm)
 			#rightDrive.set(right_pwm)
-			moveRamped(left_pwm, right_pwm)
+			self.moveRamped(left_pwm, right_pwm)
 		else:
-			moveRamped(left_pwm, right_pwm)
+			self.moveRamped(left_pwm, right_pwm)
 		
-		def setGear(self, gear):
-		if shifter.get() != gear:
-			shifter.set(gear)
+	def setGear(self, gear):
+		if self.shifter.get() != gear:
+			self.shifter.set(gear)
 
 	def tankDrive(self, left, right):
 		scaledBalance = self.autoBalance()
-		left = self.limit(left + scaledBalance, speedLimit)
-		right = self.limit(right + scaledBalance, speedLimit)
-		leftDrive.set(left * LEFT_DRIFT_OFFSET)
-		rightDrive.set(right * RIGHT_DRIFT_OFFSET)
+		left = self.limit(left + scaledBalance, self.speedLimit)
+		right = self.limit(right + scaledBalance, self.speedLimit)
+		self.leftDrive.set(left * LEFT_DRIFT_OFFSET)
+		self.rightDrive.set(right * RIGHT_DRIFT_OFFSET)
 
 	def limit(self, wheel, d):
 		return Util.limit(wheel, d)
@@ -124,36 +129,36 @@ class Drive(Component):
 		self.tankDrive(self._leftRamp, self._rightRamp)
 
 	def autoShift(self, b):
-		if shifter.get() != b:
-			shifter.set(b)
+		if self.shifter.get() != b:
+			self.shifter.set(b)
 
 	def periodic(self):
-		self._drivePool.logDouble("gyro_angle", getRotation());
-		self._drivePool.logDouble("left_enc", rightEncoder.getDistance());
-		self._drivePool.logDouble("right_enc", leftEncoder.getDistance());
+		self._drivePool.logDouble("gyro_angle", self.getRotation());
+		self._drivePool.logDouble("left_enc", self.rightEncoder.getDistance());
+		self._drivePool.logDouble("right_enc", self.leftEncoder.getDistance());
 		
-	def setDrivetrainReversed(self, reversed):
-		driveReversed = reversed
+	def setDrivetrainReversed(self, rev):
+		self.driveReversed = rev
 
 	def driveReversed(self):
-		return driveReversed
+		return self.driveReversed
 
 	def getRotation(self):
-		return navx.getAngle()
+		return self.navx.getAngle()
 
 	def getLeftDistance(self):
-		return leftEncoder.getDistance() * 2.54
+		return self.leftEncoder.getDistance() * 2.54
 
 	def getRightDistance(self):
-		return rightEncoder.getDistance() * 2.54
+		return self.rightEncoder.getDistance() * 2.54
 
 	def resetDistance(self):
-		leftEncoder.reset()
-		rightEncoder.reset()
+		self.leftEncoder.reset()
+		self.rightEncoder.reset()
 
 	def autoBalance(self):
 		if self._autoBalance:
-			pitchAngleDegrees = navx.getPitch()
+			pitchAngleDegrees = self.navx.getPitch()
 			scaledPower = 1 + (0 - pitchAngleDegrees - self._kOonBalanceAngleThresholdDegrees) / self._kOonBalanceAngleThresholdDegrees
 			if scaledPower > 2:
 				scaledPower = 2

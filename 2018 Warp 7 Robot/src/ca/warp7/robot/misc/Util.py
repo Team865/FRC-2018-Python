@@ -1,4 +1,6 @@
-from math import sin, pi
+from math import sin, pi, floor
+
+sign = lambda a: (a>0) - (a<0)
 
 class Runnable:
 	def __init__(self, func, args):
@@ -10,15 +12,15 @@ class Runnable:
 
 
 def limit(val, lim=1):
-	lim = Math.Abs(lim)
-	return Math.Max(-lim, Math.Min(val, lim))
+	lim = abs(lim)
+	return max(-lim, min(val, lim))
 
 
 def correct_angle(angle):
-	return angle + 360 * Math.Floor(0.5 - angle / 360)
+	return angle + 360 * floor(0.5 - angle / 360)
 
 def deadband(num):
-	return 0 if Math.Abs(num) < 0.18 else (num - (0.18 * Math.Sign(num))) * 1.22
+	return 0 if abs(num) < 0.18 else (num - (0.18 * sign(num))) * 1.22
 
 def sinScale(val, non_linearity, passes, lim):
 	# 
@@ -27,7 +29,7 @@ def sinScale(val, non_linearity, passes, lim):
 	# * :param val: input :param non_linearity: :param passes: how many times
 	# * to recurse :return: scaled val
 	# 
-	scaled = lim * Math.Sin(Math.PI / 2 * non_linearity * val) / Math.Sin(Math.PI / 2 * non_linearity)
+	scaled = lim * sin(pi / 2 * non_linearity * val) / sin(pi / 2 * non_linearity)
 	if passes == 1:
 		return scaled
 	else:

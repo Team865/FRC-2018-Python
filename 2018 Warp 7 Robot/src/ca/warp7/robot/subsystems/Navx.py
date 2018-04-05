@@ -1,4 +1,9 @@
-class Navx(object):
+from com.kauailabs.navx.frc.AHRS import AHRS
+from wpilib import SPI
+import logging
+logger = logging.getLogger('Navx')
+
+class Navx:
 	def __init__(self, rate=None):		
 		if rate is None:
 			self._ahrs = AHRS(SPI.Port.kMXP)
@@ -6,16 +11,16 @@ class Navx(object):
 			self._ahrs = AHRS(SPI.Port.kMXP, rate)
 			
 		if not self._ahrs.isConnected():
-			Console.WriteLine("Navx is not Connected")
+			print("Navx is not Connected")
 		elif self._ahrs.isCalibrating():
-			Console.WriteLine("Calibrating Navx")
+			print("Calibrating Navx")
 		self._ahrs.zeroYaw()
 		self.resetDisplacement()
 		
 	def updateDisplacement(self):
 		if self._ahrs.isMoving():
 			accel_g = (self._ahrs.getRawAccelX(), self._ahrs.getRawAccelY())
-            sample_time = 1.0 / updater.getHz()
+			sample_time = 1.0 / self._updater.getHz()
 			for i in range(2):
 				m_s2 = accel_g[i] * 9.80665
 				self._displacement[i] += self._last_velocity[i] * sample_time + (0.5 * m_s2 * sample_time * sample_time)
@@ -25,7 +30,7 @@ class Navx(object):
 			
 	def resetDisplacement(self):
 		self._displacement = [0, 0]
-        self._last_velocity = [0, 0]
+		self._last_velocity = [0, 0]
 
 	def getAngle(self):
 		return self._ahrs.getAngle()

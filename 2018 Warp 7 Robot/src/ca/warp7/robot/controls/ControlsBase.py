@@ -1,14 +1,20 @@
-class ControlsBase(object):
-	def __init__(self):
+from ca.warp7.robot.controls.XboxControllerPlus import XboxControllerPlus
+from ca.warp7.robot.Constants import *
+from ca.warp7.robot.misc.DataPool import DataPool
+from wpilib import Timer
+
+class ControlsBase:
+	def __init__(self,Robot):
 		self._controlPool = DataPool("controls")
 		self._timer = -1
-		self._driver = XboxControllerPlus(DRIVER_ID)
-		self._operator = XboxControllerPlus(OPERATOR_ID)
+		self.driver = XboxControllerPlus(DRIVER_ID)
+		self.operator = XboxControllerPlus(OPERATOR_ID)
 		
-		self._lift = Robot.lift
-		self._intake = Robot.intake
-		self._climber = Robot.climber
-		self._drive = Robot.drive
+		self.lift = Robot.lift
+		self.intake = Robot.intake
+		self.climber = Robot.climber
+		self.drive = Robot.drive
+		self.limelight = Robot.limelight
 
 	def periodic(self):
 		pass
@@ -21,3 +27,4 @@ class ControlsBase(object):
 			return True
 		else:
 			return False
+		

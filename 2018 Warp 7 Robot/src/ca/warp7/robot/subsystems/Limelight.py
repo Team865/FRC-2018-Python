@@ -1,8 +1,11 @@
-class Limelight(object):
+from wpilib import SmartDashboard
+from networktables import NetworkTables
+
+class Limelight:
 	# Create variables
 	def __init__(self):
 		self._pipelineNumber = 2
-		self._table = NetworkTableInstance.getDefault().getTable("limelight")
+		self._table = NetworkTables.getTable("limelight")
 
 	def getXOffset(self):
 		self._xOffset = self._table.getEntry("tx").getDouble(0)
@@ -34,7 +37,7 @@ class Limelight(object):
 
 	def getNetworkPipeline(self):
 		pipeline = self._table.getEntry("pipeline").getDouble(0)
-		return self._pipeline
+		return pipeline
 
 	def getPipeline(self):
 		return self._pipeline

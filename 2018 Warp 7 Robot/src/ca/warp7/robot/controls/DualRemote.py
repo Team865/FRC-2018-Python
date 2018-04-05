@@ -1,5 +1,18 @@
-class DualRemote(ControlsBase):
+from ca.warp7.robot.controls.Control import *
+from ca.warp7.robot.controls.ControlsBase import ControlsBase
+from wpilib.interfaces.GenericHID.Hand import kRight,kLeft
+
+class DualRemote(ControlsBase):	
+	
 	def periodic(self):
+		driver = self.driver
+		operator = self.operator
+		drive = self.drive
+		intake = self.intake
+		lift = self.lift
+		climber = self.climber
+		limelight = self.limelight
+		
 		if driver.getTrigger(kRight) == DOWN: #intake
 			intake.rampSpeed(0.75)
 		elif driver.getTrigger(kLeft) == DOWN: #out take
@@ -11,8 +24,8 @@ class DualRemote(ControlsBase):
 		if driver.getAButton() == PRESSED:
 			intake.pistonToggle()
 		if driver.getBumper(kLeft) == PRESSED:
-			Robot.limelight.switchCamera()
-			Console.WriteLine("switching camera")
+			limelight.switchCamera()
+			print("switching camera")
 			
 		if operator.getAButton() == DOWN:
 			lift.setLoc(operator.getY(kLeft))

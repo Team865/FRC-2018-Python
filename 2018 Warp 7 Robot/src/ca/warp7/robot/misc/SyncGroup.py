@@ -1,12 +1,12 @@
-class SyncGroup(object):
+class SyncGroup:
     """
         This class acts as a proxy to run multiple robot components in parallel.
         For example, if you have 3 Talons you'd like to run at full speed
-        s = SyncGroup(Talon, [0, 1, 2])
+        s = SyncGroup([0, 1, 2], Talon)
         s.set(1)
     """
 
-    def __init__(self, proxied_class, args_list):
+    def __init__(self, args_list, proxied_class):
         """
         :param proxied_class: The class to instantiate
         :param args_list: A list of arguments per-instantiation ([1, 2] would do class(1) class(2), not class(1, 2).
