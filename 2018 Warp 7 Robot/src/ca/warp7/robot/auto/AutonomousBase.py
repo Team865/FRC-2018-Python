@@ -1,57 +1,22 @@
-package ca.warp7.robot.auto;
+from ca.warp7.robot.misc.DataPool import DataPool
+from ca.warp7.robot.auto.Path import Path
 
-import java.io.FileReader;
-import java.io.IOException;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import ca.warp7.robot.Robot;
-import ca.warp7.robot.misc.DataPool;
-import ca.warp7.robot.misc.RTS;
-import ca.warp7.robot.subsystems.Drive;
-import ca.warp7.robot.subsystems.Navx;
-
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-public class AutonomousBaseSplineNotDone {
-	private Mapper mapper = new Mapper();
+class AutonomousBaseSpline:
 	
-	public int step;
-	public static DataPool autoPool = new DataPool("auto");
-	
-	private Drive drive = Robot.drive;
-	private Navx navx = Robot.navx;
-	
-	private Path path;
-	
-	public AutonomousBaseSplineNotDone(){
-		
-	}
-	
-	public void autonomousInit(String gameData, String jsonPaths) {
-		/*
+	def __init__(self,Robot):
+		self.autoPool = DataPool("auto")
+		self.drive = Robot.drive
+		self.navx = Robot.navx
+		self.path = None
+			
+	def autonomousInit(gameData, jsonPaths):
+		"""
 		 load autonomous data (robot types)
 		 load FMS data here
 		 calculate best fit path
-		 */
-		path = loadJson("/home/lvuser/Autos/"+jsonPaths+"/"+gameData+".json");
-		path.calculateSpline();
-	}
-	
-	private Path loadJson(String jsonPath){
-		JSONParser parser = new JSONParser();
-		Object obj = null;
-		try {
-			obj = parser.parse(new FileReader(jsonPath));
-		} catch (ParseException | IOException e) {
-			e.printStackTrace();
-		}
-		JSONObject jsonObject = (JSONObject) obj;
-		return new Path(jsonObject);
-	}
+		"""
+		self.path = Path("/home/lvuser/Autos/"+jsonPaths+"/"+gameData+".json")
+		self.path.calculateSpline()
 		private static final double speed = 0.3;
 	private static final double slowThresh = 0.9;
 	private static final double angleTolerance = 2.5;
