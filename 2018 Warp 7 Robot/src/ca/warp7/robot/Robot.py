@@ -8,13 +8,14 @@ from ca.warp7.robot.Constants import *
 
 class Robot(IterativeRobot):
 	def robotInit(self):
+		self.navx = Navx.Navx()
 		self.climber = Climber.Climber()
-		self.drive = Drive.Drive()
+		self.drive = Drive.Drive(self)
 		self.lift = Lift.Lift(self)
+		self.limelight = Limelight.Limelight()
 		self.intake = Intake.Intake(self)
 		self.lift._intake = self.intake
-		self.limelight = Limelight.Limelight()
-		self.navx = Navx.Navx()
+		
 		
 		self.controls = DualRemote(self)
 		

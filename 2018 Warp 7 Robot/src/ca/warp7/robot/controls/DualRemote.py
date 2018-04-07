@@ -23,6 +23,10 @@ class DualRemote(ControlsBase):
 			drive.setDrivetrainReversed(not drive.driveReversed())
 		if driver.getAButton() == PRESSED:
 			intake.pistonToggle()
+			
+		if operator.getXButton() == DOWN:
+			lift.setLoc(0.11)
+			
 		if driver.getBumper(kLeft) == PRESSED:
 			limelight.switchCamera()
 			print("switching camera")

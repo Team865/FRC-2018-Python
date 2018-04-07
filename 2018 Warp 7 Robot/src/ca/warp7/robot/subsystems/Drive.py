@@ -11,7 +11,9 @@ log = logging.getLogger("drivetrain")
 
 
 class Drive:
-	def __init__(self):
+	def __init__(self,Robot):
+		self.navx = Robot.navx
+		
 		self._leftRamp = 0.0
 		self._rightRamp = 0.0
 		self._rampSpeed = 6.0
@@ -115,8 +117,8 @@ class Drive:
 
 	def tankDrive(self, left, right):
 		scaledBalance = self.autoBalance()
-		left = self.limit(left + scaledBalance, self.speedLimit)
-		right = self.limit(right + scaledBalance, self.speedLimit)
+		left = self.limit(left + scaledBalance, DRIVE_SPEED_LIMIT)
+		right = self.limit(right + scaledBalance, DRIVE_SPEED_LIMIT)
 		self.leftDrive.set(left * LEFT_DRIFT_OFFSET)
 		self.rightDrive.set(right * RIGHT_DRIFT_OFFSET)
 
@@ -147,10 +149,10 @@ class Drive:
 		return self.navx.getAngle()
 
 	def getLeftDistance(self):
-		return self.leftEncoder.getDistance() * 2.54
+		return self.leftEncoder.getDistance() * 2.54 * ROBOT_INVERTED
 
 	def getRightDistance(self):
-		return self.rightEncoder.getDistance() * 2.54
+		return self.rightEncoder.getDistance() * 2.54 * ROBOT_INVERTED
 
 	def resetDistance(self):
 		self.leftEncoder.reset()

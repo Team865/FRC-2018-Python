@@ -18,7 +18,7 @@ class Lift:
 		self._liftEncoder.setDistancePerPulse(1)
 		self._liftHallaffect = DigitalInput(HALL_DIO)
 		self.zeroEncoder()
-		self._liftPID = MiniPID(2.5, 0, 0)
+		self._liftPID = MiniPID(*LIFT_PID)
 		self._liftPID.setOutputLimits(-0.5, 1)
 		self.disableSpeedLimit = False
 
@@ -35,6 +35,8 @@ class Lift:
 
 	def setLoc(self, scale):
 		target = abs(scale)
+		if target <= 0.1:
+			target = 0
 		SmartDashboard.putNumber("loc dfliusafusd", target)
 		self._liftPID.setSetpoint(target)
 

@@ -174,5 +174,5 @@ if __name__ == "__main__":
 	while i < 1000:
 		output = miniPID.getOutput(actual, target)
 		actual = actual + output
-		print("{%3.2f}\t\t{%3.2f}\t\t{%3.2f}\t\t{%3.2f}\n".format(target, actual, output, (target - actual)))
+		print("{:3.2f}\t\t{:3.2f}\t\t{:3.2f}\t\t{:3.2f}\n".format(target, actual, output, (target - actual)))
 		i += 1
