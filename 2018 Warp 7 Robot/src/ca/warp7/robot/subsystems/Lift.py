@@ -1,6 +1,6 @@
-from ca.warp7.robot.misc.SyncGroup import SyncGroup
+from ..misc.SyncGroup import SyncGroup
 from wpilib import Encoder, DigitalInput, SmartDashboard
-from ca.warp7.robot.Constants import *
+from ..Constants import *
 from com.stormbots.MiniPID import MiniPID
 from ctre.wpi_victorspx import WPI_VictorSPX
 from math import pow
@@ -63,7 +63,7 @@ class Lift:
 		return abs(self._liftEncoder.getDistance())
 
 	def zeroEncoder(self):
-		self._liftEncoder.reset()
+		pass#self._liftEncoder.reset()
 
 	def isBottom(self):
 		return not self._liftHallaffect.get()

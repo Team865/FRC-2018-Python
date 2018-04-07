@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 from wpilib import IterativeRobot, run, Compressor, DriverStation, AnalogInput, SmartDashboard
-from ca.warp7.robot.subsystems import Climber, Drive, Lift, Intake, Limelight, Navx
-from ca.warp7.robot.misc.RTS import RTS
-from ca.warp7.robot.misc.Util import Runnable
-from ca.warp7.robot.controls.DualRemote import DualRemote
-from ca.warp7.robot.Constants import *
+from ..robot.subsystems import Climber, Drive, Lift, Intake, Limelight, Navx
+from ..robot.misc.RTS import RTS
+from ..robot.misc.Util import Runnable
+from ..robot.controls.DualRemote import DualRemote
+from ..robot.Constants import *
 
 class Robot(IterativeRobot):
 	def robotInit(self):
-		self.navx = Navx.Navx()
+		#self.navx = Navx.Navx()
 		self.climber = Climber.Climber()
-		self.drive = Drive.Drive(self)
-		self.lift = Lift.Lift(self)
 		self.limelight = Limelight.Limelight()
+		self.drive = Drive.Drive(self)
+		self.intake = None
+		self.lift = Lift.Lift(self)
 		self.intake = Intake.Intake(self)
 		self.lift._intake = self.intake
 		
@@ -29,16 +30,16 @@ class Robot(IterativeRobot):
 		
 		self.autoPin = -1
 		
-		self.liftRTS = RTS("liftRTS",8)
-		task = Runnable(self.lift.periodic)
-		self.liftRTS.addTask(task)
-		self.liftRTS.start()
+		#self.liftRTS = RTS("liftRTS",8)
+		#task = Runnable(self.lift.periodic,[])
+		#self.liftRTS.addTask(task)
+		#self.liftRTS.start()
 		
 	def autonomousInit(self):
 		self.lift.zeroEncoder()
 		self.lift.setLoc(0)
 		self.drive.resetDistance()
-		self.navx.resetAngle()
+		#self.navx.resetAngle()
 		self.autoPin = self.autoSelector()
 		
 	def autonomousPeriodic(self):
@@ -64,7 +65,7 @@ class Robot(IterativeRobot):
 			SmartDashboard.putBoolean("inake hasCube", self.intake.hasCube())
 			#drive.periodic()
 
-			SmartDashboard.putNumber("liftRTS hz", self.liftRTS.getHz())
+			#SmartDashboard.putNumber("liftRTS hz", self.liftRTS.getHz())
 			
 			SmartDashboard.putNumber("0", self.a0.getAverageVoltage())
 			SmartDashboard.putNumber("1", self.a1.getAverageVoltage())
@@ -74,7 +75,7 @@ class Robot(IterativeRobot):
 			SmartDashboard.putNumber("Lift", a)
 			SmartDashboard.putNumber("Drive Right Dist", self.drive.getRightDistance())
 			SmartDashboard.putNumber("Drive Left Dist", self.drive.getLeftDistance())
-			SmartDashboard.putNumber("pitch", self.navx.getPitch())
+			#SmartDashboard.putNumber("pitch", self.navx.getPitch())
 
 	def autoSelector(self):
 		voltage = 0
@@ -95,7 +96,7 @@ class Robot(IterativeRobot):
 			number = 3
 			voltage = self.a3.getAverageVoltage()
 		
-		print("volt: "+voltage)
+		print("volt:",voltage)
 		return number
 			
 if __name__ == "__main__":

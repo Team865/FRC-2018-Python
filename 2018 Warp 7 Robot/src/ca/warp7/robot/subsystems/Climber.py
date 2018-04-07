@@ -1,9 +1,9 @@
-from ca.warp7.robot.Constants import *
+from ..Constants import *
 
 #import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 from wpilib import Encoder
-from ca.warp7.robot.misc.SyncGroup import SyncGroup
+from ..misc.SyncGroup import SyncGroup
 from ctre.wpi_victorspx import WPI_VictorSPX
 
 class Climber:

@@ -1,7 +1,7 @@
-from ca.warp7.robot.misc.LimelightPhotosensor import LimelightPhotosensor
-from ca.warp7.robot.misc.SyncGroup import SyncGroup
+from ..misc.LimelightPhotosensor import LimelightPhotosensor
+from ..misc.SyncGroup import SyncGroup
 from wpilib import Solenoid
-from ca.warp7.robot.Constants import *
+from ..Constants import *
 from ctre.wpi_victorspx import WPI_VictorSPX
 
 class Intake:

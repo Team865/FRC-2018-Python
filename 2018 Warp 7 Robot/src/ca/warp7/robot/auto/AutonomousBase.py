@@ -62,7 +62,7 @@ class AutonomousBaseSpline:
 				
 				requiredAngle = math.atan2(derivativesPresent[1], derivativesPresent[0])
 				requiredAngle = (requiredAngle if requiredAngle > 0 else (2 * math.pi + requiredAngle)) * 360 / (2 * math.pi)
-				
+				angleTolerance=0.3
 				turnSpeed = 1-abs((navAngle-requiredAngle)/angleTolerance)
 				if turnSpeed < 0:
 					turnSpeed = 0

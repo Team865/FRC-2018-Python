@@ -1,7 +1,6 @@
 from wpilib import XboxController
 
-from ca.warp7.robot.controls.Control import *
-from wpilib.interfaces.GenericHID import Hand
+from ..controls.Control import *
 
 class XboxControllerPlus():
 	def __init__(self, port):
@@ -77,12 +76,12 @@ class XboxControllerPlus():
 			return UP
 			
 	def getBumper(self, h):
-		if h == Hand.kLeft:
+		if h == kLeft:
 			a = self._lb
 		else:
 			a = self._rb
 		b = self._controller.getBumper(h)
-		if h == Hand.kLeft:
+		if h == kLeft:
 			self._lb = b
 		else:
 			self._rb = b
@@ -98,12 +97,12 @@ class XboxControllerPlus():
 			return UP
 			
 	def getTrigger(self, h):
-		if h == Hand.kLeft:
+		if h == kLeft:
 			a = self._lt
 		else:
 			a = self._rt
 		b = self._controller.getTriggerAxis(h) >= 0.5
-		if h == Hand.kLeft:
+		if h == kLeft:
 			self._lt = b
 		else:
 			self._rt = b
@@ -118,12 +117,12 @@ class XboxControllerPlus():
 			return UP
 			
 	def getStickButton(self, h):
-		if h == Hand.kLeft:
+		if h == kLeft:
 			a = self._ls
 		else:
 			a = self._rs
 		b = self._controller.getStickButton(h)
-		if h == Hand.kLeft:
+		if h == kLeft:
 			self._ls = b
 		else:
 			self._rs = b

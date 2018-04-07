@@ -1,6 +1,6 @@
-from ca.warp7.robot.controls.XboxControllerPlus import XboxControllerPlus
-from ca.warp7.robot.Constants import *
-from ca.warp7.robot.misc.DataPool import DataPool
+from ..controls.XboxControllerPlus import XboxControllerPlus
+from ..Constants import *
+from ..misc.DataPool import DataPool
 from wpilib import Timer
 
 class ControlsBase:

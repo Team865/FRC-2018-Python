@@ -1,10 +1,10 @@
 import logging
 from wpilib import Encoder, Solenoid
-from ca.warp7.robot.misc import Util
-from ca.warp7.robot.misc.DataPool import DataPool
-from ca.warp7.robot.misc.SyncGroup import SyncGroup
+from ..misc import Util
+from ..misc.DataPool import DataPool
+from ..misc.SyncGroup import SyncGroup
 from ctre.wpi_victorspx import WPI_VictorSPX
-from ca.warp7.robot.Constants import *
+from ..Constants import *
 
 
 log = logging.getLogger("drivetrain")
@@ -12,7 +12,9 @@ log = logging.getLogger("drivetrain")
 
 class Drive:
 	def __init__(self,Robot):
-		self.navx = Robot.navx
+		#self.navx = Robot.navx
+		
+		self.speedLimit = 0.999
 		
 		self._leftRamp = 0.0
 		self._rightRamp = 0.0
@@ -117,8 +119,8 @@ class Drive:
 
 	def tankDrive(self, left, right):
 		scaledBalance = self.autoBalance()
-		left = self.limit(left + scaledBalance, DRIVE_SPEED_LIMIT)
-		right = self.limit(right + scaledBalance, DRIVE_SPEED_LIMIT)
+		left = self.limit(left + scaledBalance, self.speedLimit)
+		right = self.limit(right + scaledBalance, self.speedLimit)
 		self.leftDrive.set(left * LEFT_DRIFT_OFFSET)
 		self.rightDrive.set(right * RIGHT_DRIFT_OFFSET)
 
@@ -159,10 +161,13 @@ class Drive:
 		self.rightEncoder.reset()
 
 	def autoBalance(self):
-		if self._autoBalance:
+		'''if self._autoBalance:
 			pitchAngleDegrees = self.navx.getPitch()
 			scaledPower = 1 + (0 - pitchAngleDegrees - self._kOonBalanceAngleThresholdDegrees) / self._kOonBalanceAngleThresholdDegrees
 			if scaledPower > 2:
 				scaledPower = 2
-			#return scaledPower;
+			#return scaledPower;'''
 		return 0
+	
+	def setSpeedLimit(self, speedLimit):
+		self.speedLimit = self.limit(speedLimit, DRIVE_SPEED_LIMIT)

@@ -1,6 +1,5 @@
-from ca.warp7.robot.controls.Control import *
-from ca.warp7.robot.controls.ControlsBase import ControlsBase
-from wpilib.interfaces.GenericHID.Hand import kRight,kLeft
+from ..controls.Control import *
+from ..controls.ControlsBase import ControlsBase
 
 class DualRemote(ControlsBase):	
 	

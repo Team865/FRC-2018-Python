@@ -1,4 +1,7 @@
 from com.kauailabs.navx.frc.AHRS import AHRS
+
+from ..misc.com. import AHRS
+
 from wpilib import SPI
 import logging
 logger = logging.getLogger('Navx')
