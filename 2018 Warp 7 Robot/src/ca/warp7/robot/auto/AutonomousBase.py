@@ -1,5 +1,7 @@
 from ca.warp7.robot.misc.DataPool import DataPool
 from ca.warp7.robot.auto.Path import Path
+import json
+from ca.warp7.robot.Constants import *
 
 class AutonomousBaseSpline:
 	
@@ -9,44 +11,49 @@ class AutonomousBaseSpline:
 		self.navx = Robot.navx
 		self.path = None
 			
-	def autonomousInit(gameData, jsonPaths):
+	def autonomousInit(self, gameData, jsonPaths):
 		"""
 		 load autonomous data (robot types)
 		 load FMS data here
 		 calculate best fit path
 		"""
-		self.path = Path("/home/lvuser/Autos/"+jsonPaths+"/"+gameData+".json")
+		with open("/home/lvuser/Autos/"+jsonPaths+"/"+gameData+".json", 'r') as f:
+			path = Path(json.load(f))
+		
 		self.path.calculateSpline()
-		private static final double speed = 0.3;
-	private static final double slowThresh = 0.9;
-	private static final double angleTolerance = 2.5;
-	public void periodic(){
-		navx.resetAngle();
-		mapper.speed = speed;
-		for(int i=0;i<path.getNumberOfPoints();i++){
+	
+	def autonomousPeriodic(self):
+		self.navx.resetAngle()
+		i=0
+		while i < self.path.pointsLength:
+			print(i)
+			point = self.path.points[i]
+			''' create runnable start point methods here '''
+			if point.slowStop:
+				pass #slow down to point
 			
-			Point point = path.points[i];
+			self.drive.resetDistance()
 			
-			drive.resetDistance();
-			System.out.println(i);
-			for (Method method : point.startMethods)
-				mapper.mapMethod(method).run();
-			
-			double slowThreshCurr;
-			if (point.slowStop)
-				slowThreshCurr = slowThresh;
-			else
-				slowThreshCurr = 2;
-			
-			drive.resetDistance();
-			
-			RTS scaledRuntime = new RTS("scaledRuntime",8);
-			for (Method method : point.scaledMethods)
-				scaledRuntime.addTask(mapper.mapMethod(method));
-			scaledRuntime.start();
+			self.scaledRuntime = RTS("scaledRuntime",8)
+			''' create runnable start point methods here '''
+			#task = Runnable(self.lift.periodic)
+			#self.liftRTS.addTask(task)
+			#self.liftRTS.start()
 			
 			SmartDashboard.putNumber("break", 0);
 			SmartDashboard.putNumber("pointDist", point.distance);
+			
+			overallDistance = getOverallDistance()
+			while point.distance > overallDistance:
+				overallDistance = getOverallDistance()
+				SmartDashboard.putNumber("Left", drive.getLeftDistance());
+				SmartDashboard.putNumber("Right", drive.getRightDistance());
+				SmartDashboard.putNumber("Avg", getOverallDistance());
+				
+			i+=1
+		for(int i=0;i<path.getNumberOfPoints();i++){
+				
+			
 			
 			//for (double overallDistance=0; point.distance > overallDistance; overallDistance=getOverallDistance()){//exit out when robot has gone distance
 			double overallDistance= getOverallDistance();
