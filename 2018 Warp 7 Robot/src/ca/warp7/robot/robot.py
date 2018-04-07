@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 from wpilib import IterativeRobot, run, Compressor, DriverStation, AnalogInput, SmartDashboard
-from ..robot.subsystems import Climber, Drive, Lift, Intake, Limelight, Navx
-from ..robot.misc.RTS import RTS
-from ..robot.misc.Util import Runnable
-from ..robot.controls.DualRemote import DualRemote
-from ..robot.Constants import *
+from subsystems import Climber, Drive, Lift, Intake, Limelight, Navx
+from misc.RTS import RTS
+from misc.Util import Runnable
+from controls.DualRemote import DualRemote
+from Constants import *
 
 class Robot(IterativeRobot):
 	def robotInit(self):

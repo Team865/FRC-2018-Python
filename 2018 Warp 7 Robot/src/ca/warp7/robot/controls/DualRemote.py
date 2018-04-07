@@ -1,5 +1,5 @@
-from ..controls.Control import *
-from ..controls.ControlsBase import ControlsBase
+from controls.Control import *
+from controls.ControlsBase import ControlsBase
 
 class DualRemote(ControlsBase):	
 	

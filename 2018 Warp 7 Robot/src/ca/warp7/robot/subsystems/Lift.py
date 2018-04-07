@@ -1,7 +1,7 @@
-from ..misc.SyncGroup import SyncGroup
+from misc.SyncGroup import SyncGroup
 from wpilib import Encoder, DigitalInput, SmartDashboard
-from ..Constants import *
-from com.stormbots.MiniPID import MiniPID
+from Constants import *
+from misc.com.stormbots.MiniPID import MiniPID
 from ctre.wpi_victorspx import WPI_VictorSPX
 from math import pow
 

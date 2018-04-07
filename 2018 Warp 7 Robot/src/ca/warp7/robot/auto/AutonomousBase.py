@@ -1,8 +1,8 @@
-from ca.warp7.robot.misc.DataPool import DataPool
-from ca.warp7.robot.auto.Path import Path
+from misc.DataPool import DataPool
+from auto.Path import Path
 import json
-from ca.warp7.robot.Constants import *
-from ca.warp7.robot.misc.RTS import RTS
+from Constants import *
+from misc.RTS import RTS
 from wpilib import SmartDashboard
 import math
 

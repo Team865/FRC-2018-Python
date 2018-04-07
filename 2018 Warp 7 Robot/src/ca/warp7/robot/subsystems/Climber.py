@@ -1,9 +1,9 @@
-from ..Constants import *
+from Constants import *
 
 #import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 from wpilib import Encoder
-from ..misc.SyncGroup import SyncGroup
+from misc.SyncGroup import SyncGroup
 from ctre.wpi_victorspx import WPI_VictorSPX
 
 class Climber:

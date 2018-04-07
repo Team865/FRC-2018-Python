@@ -1,6 +1,6 @@
 from wpilib import XboxController
 
-from ..controls.Control import *
+from controls.Control import *
 
 class XboxControllerPlus():
 	def __init__(self, port):

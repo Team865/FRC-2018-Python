@@ -1,10 +1,10 @@
 import logging
 from wpilib import Encoder, Solenoid
-from ..misc import Util
-from ..misc.DataPool import DataPool
-from ..misc.SyncGroup import SyncGroup
+from misc import Util
+from misc.DataPool import DataPool
+from misc.SyncGroup import SyncGroup
 from ctre.wpi_victorspx import WPI_VictorSPX
-from ..Constants import *
+from Constants import *
 
 
 log = logging.getLogger("drivetrain")

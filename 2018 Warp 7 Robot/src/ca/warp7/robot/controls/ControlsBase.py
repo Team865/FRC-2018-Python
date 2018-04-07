@@ -1,6 +1,6 @@
-from ..controls.XboxControllerPlus import XboxControllerPlus
-from ..Constants import *
-from ..misc.DataPool import DataPool
+from controls.XboxControllerPlus import XboxControllerPlus
+from Constants import *
+from misc.DataPool import DataPool
 from wpilib import Timer
 
 class ControlsBase:
