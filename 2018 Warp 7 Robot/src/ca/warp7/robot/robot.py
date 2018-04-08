@@ -31,7 +31,7 @@ class Robot(IterativeRobot):
 		self.autoPin = -1
 		
 		#self.liftRTS = RTS("liftRTS",8)
-		#task = Runnable(self.lift.periodic,[])
+		#task = Runnable(,[])
 		#self.liftRTS.addTask(task)
 		#self.liftRTS.start()
 		
@@ -57,6 +57,7 @@ class Robot(IterativeRobot):
 			self.controls.periodic()
 			self.limelight.mutiPipeline()
 			self.intake.periodic()
+			self.lift.periodic()
 
 			b = self.lift.getEncoderVal()
 			if a < b:

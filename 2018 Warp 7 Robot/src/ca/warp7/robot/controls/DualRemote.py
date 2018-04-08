@@ -18,6 +18,7 @@ class DualRemote(ControlsBase):
 			intake.rampSpeed(-0.5)
 		else:
 			intake.rampSpeed(0)
+			
 		if driver.getStickButton(kRight) == PRESSED:
 			drive.setDrivetrainReversed(not drive.driveReversed())
 		if driver.getAButton() == PRESSED:
@@ -25,6 +26,9 @@ class DualRemote(ControlsBase):
 			
 		if operator.getXButton() == DOWN:
 			lift.setLoc(0.11)
+			
+		if(operator.getTrigger(kRight) == DOWN):
+			lift.setLoc(0.4);
 			
 		if driver.getBumper(kLeft) == PRESSED:
 			limelight.switchCamera()

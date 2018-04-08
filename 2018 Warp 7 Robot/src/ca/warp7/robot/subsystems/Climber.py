@@ -18,7 +18,7 @@ class Climber:
 
 	def setSpeed(self, speed):
 		# Ramp to prevent brown outs
-		self.ramp += (self.speed - self.ramp)/self.rampSpeed
+		self.ramp += (speed - self.ramp)/self.rampSpeed
 		self.climberMotors.set(self.ramp)
 
 	def setLoc(self, loc):

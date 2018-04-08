@@ -19,7 +19,7 @@ class Lift:
 		self._liftHallaffect = DigitalInput(HALL_DIO)
 		self.zeroEncoder()
 		self._liftPID = MiniPID(*LIFT_PID)
-		self._liftPID.setOutputLimits(-0.5, 1)
+		self._liftPID.setOutputLimits(-0.45,1)
 		self.disableSpeedLimit = False
 
 	def setSpeed(self, speed):
@@ -46,7 +46,7 @@ class Lift:
 			self.zeroEncoder()
 		else:
 			if self._intake.getSpeed() >= 0:
-				self._intake.rampSpeed(0.3);
+				self._intake.rampSpeed(0.3)
 		
 		scaledLift = self.getEncoderVal()/LIFT_HEIGHT;
 		speed = self._liftPID.getOutput(scaledLift);
@@ -63,7 +63,7 @@ class Lift:
 		return abs(self._liftEncoder.getDistance())
 
 	def zeroEncoder(self):
-		pass#self._liftEncoder.reset()
+		self._liftEncoder.reset()
 
 	def isBottom(self):
 		return not self._liftHallaffect.get()
