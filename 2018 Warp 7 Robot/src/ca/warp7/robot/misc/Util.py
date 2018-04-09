@@ -3,7 +3,7 @@ from math import sin, pi, floor
 sign = lambda a: (a>0) - (a<0)
 
 class Runnable:
-	def __init__(self, func, args):
+	def __init__(self, func, args=[]):
 		self.func = func
 		self.args = args
 		

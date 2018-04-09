@@ -2,13 +2,13 @@
 from wpilib import IterativeRobot, run, Compressor, DriverStation, AnalogInput, SmartDashboard
 from subsystems import Climber, Drive, Lift, Intake, Limelight, Navx
 from misc.RTS import RTS
-from misc.Util import Runnable
 from controls.DualRemote import DualRemote
 from Constants import *
+from auto import AutonomousBaseSpline
 
 class Robot(IterativeRobot):
 	def robotInit(self):
-		#self.navx = Navx.Navx()
+		self.navx = Navx.Navx()
 		self.climber = Climber.Climber()
 		self.limelight = Limelight.Limelight()
 		self.drive = Drive.Drive(self)
@@ -17,6 +17,7 @@ class Robot(IterativeRobot):
 		self.intake = Intake.Intake(self)
 		self.lift._intake = self.intake
 		
+		self.autonomous = AutonomousBaseSpline.AutonomousBaseSpline(self)
 		
 		self.controls = DualRemote(self)
 		
@@ -27,25 +28,37 @@ class Robot(IterativeRobot):
 		self.a1 = AnalogInput(1)
 		self.a2 = AnalogInput(2)
 		self.a3 = AnalogInput(3)
-		
-		self.autoPin = -1
+		self.runAutoOne = True
 		
 		#self.liftRTS = RTS("liftRTS",8)
-		#task = Runnable(,[])
-		#self.liftRTS.addTask(task)
+		#self.liftRTS.addTask(self.lift.periodic)
 		#self.liftRTS.start()
 		
 	def autonomousInit(self):
-		self.lift.zeroEncoder()
-		self.lift.setLoc(0)
-		self.drive.resetDistance()
-		#self.navx.resetAngle()
-		self.autoPin = self.autoSelector()
+		self.runAutoOne = True
 		
 	def autonomousPeriodic(self):
-		pass
+		if self.runAutoOne:
+			self.lift.zeroEncoder()
+			self.lift.setLoc(0)
+			self.drive.resetDistance()
+			self.navx.resetAngle()
+			
+			selectedAuto = self.autoSelector()
+			gameData = self.driverstation.getGameSpecificMessage()
+			
+			self.autonomous.autonomousInit(gameData, selectedAuto)
+			
+			if self.autonomous.is_alive():
+				self.autonomous.terminate()
+			self.autonomous.start()
+			
+			self.runAutoOne = False
 
 	def teleopInit(self):
+		if self.autonomous.is_alive():
+			self.autonomous.terminate()
+			
 		self.drive.setSpeedLimit(1);
 		self.drive.tankDrive(0,0);
 		self.compressor.setClosedLoopControl(True);
@@ -76,25 +89,25 @@ class Robot(IterativeRobot):
 			SmartDashboard.putNumber("Lift", a)
 			SmartDashboard.putNumber("Drive Right Dist", self.drive.getRightDistance())
 			SmartDashboard.putNumber("Drive Left Dist", self.drive.getLeftDistance())
-			#SmartDashboard.putNumber("pitch", self.navx.getPitch())
+			SmartDashboard.putNumber("pitch", self.navx.getPitch())
 
 	def autoSelector(self):
-		voltage = 0
-		number = 0
+		voltage = -1
+		number = "Baseline"
 		if self.a0.getAverageVoltage() > voltage:
-			number = 1
+			number = "Left"
 			voltage = self.a0.getAverageVoltage()
 		
 		if self.a1.getAverageVoltage() > voltage:
-			number = 2
+			number = "Middle"
 			voltage = self.a1.getAverageVoltage()
 		
 		if self.a2.getAverageVoltage() > voltage:
-			number = 0
+			number = "None"
 			voltage = self.a2.getAverageVoltage()
 		
 		if self.a3.getAverageVoltage() > voltage:
-			number = 3
+			number = "Right"
 			voltage = self.a3.getAverageVoltage()
 		
 		print("volt:",voltage)

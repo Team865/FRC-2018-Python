@@ -14,7 +14,15 @@ class Path:
 	def calculateSpline(self):
 		self.splineX = interpolate.Akima1DInterpolator(self.pointsLength,self.xPoints)
 		self.splineY = interpolate.Akima1DInterpolator(self.pointsLength,self.yPoints)
+		self.splineXDeriv1 = self.splineX.derivative(1)
+		self.splineYDeriv1 = self.splineY.derivative(1)
+		self.splineXDeriv2 = self.splineX.derivative(2)
+		self.splineYDeriv2 = self.splineY.derivative(2)
 		
-	def derivative(self, x, deriv=1):
-		return [self.splineX.derivative(deriv)(x),
-				self.splineY.derivative(deriv)(x)]
+	def derivative1(self, x):
+		return [self.splineXDeriv1(x),
+				self.splineYDeriv1(x)]
+		
+	def derivative2(self, x):
+		return [self.splineXDeriv2(x),
+				self.splineYDeriv2(x)]

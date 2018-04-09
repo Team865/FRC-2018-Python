@@ -33,15 +33,16 @@ class Lift:
 		self._LiftMotorLeft.set(self._ramp)
 		self._LiftMotorRight.set(self._ramp)
 
-	def setLoc(self, scale):
-		target = abs(scale)
-		if target <= 0.1:
+	def setLoc(self, target):
+		target = abs(target)
+		if target > 1:
+			target = 1
+		elif target <= 0.1:
 			target = 0
 		SmartDashboard.putNumber("loc dfliusafusd", target)
 		self._liftPID.setSetpoint(target)
 
 	def periodic(self):
-		
 		if self.isBottom(): #zero switch is active zero encoder
 			self.zeroEncoder()
 		else:

@@ -1,5 +1,6 @@
 from misc.com.kauailabs.navx.frc.AHRS import AHRS
 from wpilib import SPI
+from misc.RTS import RTS
 import logging
 logger = logging.getLogger('Navx')
 
@@ -16,6 +17,8 @@ class Navx:
 			print("Calibrating Navx")
 		self._ahrs.zeroYaw()
 		self.resetDisplacement()
+		self._updater = self.scaledRuntime = RTS("Displacement updater",60)
+		self._updater.addTask(self.updateDisplacement)
 		
 	def updateDisplacement(self):
 		if self._ahrs.isMoving():
@@ -35,6 +38,9 @@ class Navx:
 	def getAngle(self):
 		return self._ahrs.getAngle()
 
+	def startUpdateDisplacement(self):
+		self._updater.start()
+	
 	def stopUpdateDisplacement(self):
 		self._updater.stop()
 

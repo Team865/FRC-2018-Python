@@ -2,17 +2,23 @@ from misc.DataPool import DataPool
 from auto.Path import Path
 import json
 from Constants import *
+from multiprocessing import Process
+from misc.com.stormbots.MiniPID import MiniPID
 from misc.RTS import RTS
 from wpilib import SmartDashboard
 import math
 
-class AutonomousBaseSpline:
+class AutonomousBaseSpline(Process):
 	
 	def __init__(self,Robot):
+		Process.__init__(self)
+		
 		self.autoPool = DataPool("auto")
+		self.Robot = Robot
 		self.drive = Robot.drive
 		self.navx = Robot.navx
 		self.path = None
+		self.turnPID = MiniPID(*TURN_PID)
 			
 	def autonomousInit(self, gameData, jsonPaths):
 		"""
@@ -25,10 +31,10 @@ class AutonomousBaseSpline:
 		
 		self.path.calculateSpline()
 	
-	def autonomousPeriodic(self):
+	def run(self):
 		self.navx.resetAngle()
 		i=0
-		while i < self.path.pointsLength:
+		while self.Robot.isAutonomous() and i < self.path.pointsLength:
 			print(i)
 			point = self.path.points[i]
 			''' create runnable start point methods here '''
@@ -39,40 +45,35 @@ class AutonomousBaseSpline:
 			
 			self.scaledRuntime = RTS("scaledRuntime",8)
 			''' create runnable start point methods here '''
-			#task = Runnable(self.lift.periodic)
-			#self.liftRTS.addTask(task)
+			#self.liftRTS.addTask(self.lift.periodic)
 			#self.liftRTS.start()
 			
 			SmartDashboard.putNumber("break", 0)
 			SmartDashboard.putNumber("pointDist", point.distance)
 			
 			overallDistance = self.getOverallDistance()
-			while point.distance > overallDistance:
+			while self.Robot.isAutonomous() and point.distance > overallDistance:
 				overallDistance = self.getOverallDistance()
-				SmartDashboard.putNumber("Left", self.drive.getLeftDistance())
-				SmartDashboard.putNumber("Right", self.drive.getRightDistance())
-				SmartDashboard.putNumber("Avg", self.getOverallDistance())
 				
 				scaledLocation = overallDistance/point.distance;
 				
-				derivativesPresent = self.path.derivative(i+scaledLocation,1)
+				derivativesPresent = self.path.derivative1(i+scaledLocation,1)
 			
 				navAngle = self.navx.getAngle()%360
 				SmartDashboard.putNumber("navAngle", navAngle)
 				
 				requiredAngle = math.atan2(derivativesPresent[1], derivativesPresent[0])
 				requiredAngle = (requiredAngle if requiredAngle > 0 else (2 * math.pi + requiredAngle)) * 360 / (2 * math.pi)
-				angleTolerance=0.3
-				turnSpeed = 1-abs((navAngle-requiredAngle)/angleTolerance)
-				if turnSpeed < 0:
-					turnSpeed = 0
-					
-				SmartDashboard.putNumber("turnSpeed", turnSpeed);
 				
-				if (requiredAngle - navAngle) % 360 < 180: # clockwise
-					self.drive.tankDrive(AUTO_SPEED,turnSpeed*AUTO_SPEED)
-				else:
-					self.drive.tankDrive(AUTO_SPEED*turnSpeed,AUTO_SPEED);
+				turnSpeed = self.turnPID.getOutput(navAngle, requiredAngle)
+				SmartDashboard.putNumber("turnSpeed", turnSpeed);
+					
+				if turnSpeed < 0: # turn left
+					turnSpeed *= -1;
+					self.drive.tankDrive(AUTO_SPEED - turnSpeed, AUTO_SPEED);
+				else: # turn right
+					self.drive.tankDrive(AUTO_SPEED, AUTO_SPEED - turnSpeed);
+				
 				
 				#scaledRuntime.stop();
 				SmartDashboard.putNumber("break", 1);

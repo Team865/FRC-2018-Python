@@ -1,10 +1,11 @@
-from threading import Thread
+from multiprocessing import Process
 from time import time as NanoTime
 from time import sleep
+from misc.Util import Runnable
 
-class RTS(Thread):
+class RTS(Process):
 	def __init__(self, name, TARGET_HZ=60):
-		Thread.__init__(self)
+		Process.__init__(self)
 		
 		self._tasks = []
 		self._running = False
@@ -38,11 +39,16 @@ class RTS(Thread):
 				sleep((lastLoopTime - NanoTime() + self._OPTIMAL_TIME) / 1000000.0)
 		else:
 			print("RTS is already running for object:", self._name)
+	
+	def terminate(self, *args, **kwargs):
+		self._running = False
+		return Process.terminate(self, *args, **kwargs)
 
 	def stop(self):
 		self._running = False
 
-	def addTask(self, task):
+	def addTask(self, func, args=[]):
+		task = Runnable(func,args)
 		self._tasks.append(task)
 
 	def getHz(self):
